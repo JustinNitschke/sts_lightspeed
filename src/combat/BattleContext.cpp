@@ -3140,7 +3140,29 @@ namespace sts {
             << ", seed: " << bc.seed
             << "\n";
 
-        os << bc.monsters;
+        // os << bc.monsters;
+        // logic below copied from MonsterGroup::operator<<
+        const std::string s = "\n\t";
+        os << "MonsterGroup { ";
+        os << s << "monsterCount: " << bc.monsters.monsterCount;
+        os << s << "monstersAlive: " << bc.monsters.monstersAlive;
+        os << s << "extraRollMoveOnTurnBits: " << bc.monsters.extraRollMoveOnTurn.to_string();
+
+        for (int i = 0; i < bc.monsters.monsterCount; ++i) {
+            auto &m = bc.monsters.arr[i];
+            os << s << m;
+            if (!m.isDeadOrEscaped()) {
+                auto dmgInfo = m.getMoveBaseDamage(bc);
+                if (dmgInfo.damage > 0) {
+                    int calcDmg = m.calculateDamageToPlayer(bc, dmgInfo.damage);
+                    os << " nextActionDamage: " << calcDmg;
+                    if (dmgInfo.attackCount > 1) {
+                        os << "x" << dmgInfo.attackCount;
+                    }
+                }
+            }
+        }
+        os << "\n}\n";
         os << bc.player;
         os << bc.cards;
         os << "}\n";
