@@ -3153,12 +3153,14 @@ namespace sts {
             os << s << m;
             if (!m.isDeadOrEscaped()) {
                 auto dmgInfo = m.getMoveBaseDamage(bc);
+                int calcDmg = 0;
                 if (dmgInfo.damage > 0) {
-                    int calcDmg = m.calculateDamageToPlayer(bc, dmgInfo.damage);
-                    os << " nextActionDamage: " << calcDmg;
-                    if (dmgInfo.attackCount > 1) {
-                        os << "x" << dmgInfo.attackCount;
-                    }
+                    calcDmg = m.calculateDamageToPlayer(bc, dmgInfo.damage);
+                }
+                os << " nextActionDamage: " << calcDmg;
+
+                if (dmgInfo.damage > 0 && dmgInfo.attackCount > 1) {
+                    os << "x" << dmgInfo.attackCount;
                 }
             }
         }
